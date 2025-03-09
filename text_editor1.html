@@ -1,0 +1,3340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محرر النصوص العربي الاحترافي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6da7;
+            --primary-light: #6285c3;
+            --primary-dark: #3b5a8c;
+            --secondary-color: #f8f9fa;
+            --accent-color: #28a745;
+            --accent-hover: #218838;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --text-color: #333;
+            --text-light: #6c757d;
+            --border-color: #dee2e6;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --header-bg: #4a6da7;
+            --header-text: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 8px;
+            --toolbar-icon-size: 16px;
+        }
+        
+        [data-theme="dark"] {
+            --primary-color: #5b7fc0;
+            --primary-light: #7b9bd0;
+            --primary-dark: #4a6da7;
+            --secondary-color: #2d3748;
+            --accent-color: #38b249;
+            --accent-hover: #2a9d3b;
+            --warning-color: #d39e00;
+            --danger-color: #c82333;
+            --info-color: #138496;
+            --text-color: #e2e8f0;
+            --text-light: #a0aec0;
+            --border-color: #4a5568;
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --header-bg: #2d3748;
+            --header-text: #e2e8f0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            transition: var(--transition);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px 0;
+            text-align: center;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .title-input {
+            padding: 15px;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            width: 100%;
+            outline: none;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+        
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+        
+        .toolbar::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .toolbar::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .toolbar-group {
+            display: flex;
+            gap: 5px;
+            border-left: 1px solid var(--border-color);
+            padding-left: 10px;
+            margin-left: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar-group:last-child {
+            border-left: none;
+        }
+        
+        .toolbar button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-color);
+            min-width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .toolbar button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .toolbar button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .toolbar select, .toolbar input {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        .toolbar-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-button {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--card-bg);
+            min-width: 180px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            border-radius: 4px;
+            padding: 5px;
+            right: 0;
+            top: 100%;
+        }
+        
+        .toolbar-dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content button {
+            width: 100%;
+            text-align: right;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 2px 0;
+        }
+        
+        .dropdown-content button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .editor-wrapper {
+            display: flex;
+            height: 500px;
+        }
+        
+        .editor {
+            flex: 1;
+            padding: 15px;
+            min-height: 400px;
+            border: none;
+            resize: none;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+        
+        .preview {
+            flex: 1;
+            padding: 15px;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: none;
+            transition: var(--transition);
+        }
+        
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            transition: var(--transition);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .footer button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        
+        .save-draft {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .save-draft:hover {
+            background-color: rgba(74, 109, 167, 0.1);
+        }
+        
+        .preview-toggle {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .preview-toggle:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .preview-browser {
+            background-color: #795548;
+            color: white;
+        }
+        
+        .preview-browser:hover {
+            background-color: #5d4037;
+        }
+        
+        .publish {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .publish:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .copy-html {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .copy-html:hover {
+            background-color: #5a6268;
+        }
+        
+        .copy-text {
+            background-color: var(--info-color);
+            color: white;
+        }
+        
+        .copy-text:hover {
+            background-color: #138496;
+        }
+        
+        .mobile-toolbar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            border: none;
+            z-index: 999;
+        }
+        
+        .mobile-toolbar {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 998;
+            padding: 10px;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .mobile-toolbar button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            width: 50%;
+            max-width: 600px;
+            box-shadow: var(--shadow);
+            color: var(--text-color);
+            transition: var(--transition);
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        
+        .close {
+            float: left;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .close:hover {
+            color: var(--text-color);
+        }
+        
+        .modal input, .modal textarea, .modal select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .modal button {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-weight: 500;
+        }
+        
+        .modal-cancel {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-color) !important;
+        }
+        
+        .modal-cancel:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .modal-confirm {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .modal-confirm:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .copy-modal textarea {
+            height: 300px;
+            font-family: monospace;
+            white-space: pre;
+            resize: none;
+        }
+        
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            border-top: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .tag {
+            background-color: rgba(74, 109, 167, 0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .tag span {
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        
+        .tag:hover {
+            background-color: rgba(74, 109, 167, 0.2);
+        }
+        
+        .tag-input {
+            border: none;
+            outline: none;
+            padding: 5px;
+            flex: 1;
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        
+        .status-bar {
+            padding: 10px;
+            font-size: 14px;
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 1.2rem;
+        }
+        
+        .toast-success {
+            background-color: var(--accent-color);
+        }
+        
+        .toast-error {
+            background-color: var(--danger-color);
+        }
+        
+        .toast-info {
+            background-color: var(--primary-color);
+        }
+        
+        .toast-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .settings-modal .settings-section {
+            margin-bottom: 20px;
+        }
+        
+        .settings-modal .settings-section h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        
+        .settings-modal .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-modal .settings-option:last-child {
+            border-bottom: none;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 10px;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            box-shadow: var(--shadow);
+        }
+        
+        .emoji-picker button {
+            cursor: pointer;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .emoji-picker button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .emoji-categories {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .emoji-categories button {
+            font-size: 1.2rem;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .divider {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 15px 0;
+        }
+        
+        .fancy-divider {
+            text-align: center;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .fancy-divider:before, .fancy-divider:after {
+            background-color: var(--border-color);
+            content: "";
+            display: inline-block;
+            height: 1px;
+            position: relative;
+            vertical-align: middle;
+            width: 50%;
+        }
+        
+        .fancy-divider:before {
+            right: 0.5em;
+            margin-left: -50%;
+        }
+        
+        .fancy-divider:after {
+            left: 0.5em;
+            margin-right: -50%;
+        }
+        
+        .preview-styles code {
+            background-color: rgba(0, 0, 0, 0.05);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .preview-styles blockquote {
+            border-right: 3px solid var(--primary-color);
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.02);
+            font-style: italic;
+        }
+        
+        /* أدوات تنسيق إضافية */
+        .text-formatting-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .text-formatting-buttons button {
+            padding: 5px 10px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .text-formatting-buttons button:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .color-option {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+        
+        .quick-insert-panel {
+            position: absolute;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+            width: 250px;
+        }
+        
+        .quick-insert-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: right;
+            cursor: pointer;
+            color: var(--text-color);
+            border-radius: 4px;
+        }
+        
+        .quick-insert-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .quick-insert-button i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* تحسينات تجاوب الهاتف المحمول */
+        @media (max-width: 768px) {
+            .editor-wrapper {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .preview {
+                border-right: none;
+                border-top: 1px solid var(--border-color);
+            }
+            
+            .footer {
+                justify-content: center;
+            }
+            
+            .footer button {
+                flex: 1;
+                min-width: 0;
+                justify-content: center;
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .footer button i {
+                margin-right: 0;
+            }
+            
+            .footer button span {
+                display: none;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 20% auto;
+            }
+            
+            .toolbar {
+                display: none;
+            }
+            
+            .mobile-toolbar-toggle {
+                display: flex;
+            }
+            
+            header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .title-input {
+                font-size: 1.2rem;
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .emoji-picker {
+                width: 280px;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 80px;
+            }
+            
+            .color-palette {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer button {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            
+            .tag {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-start;
+            }
+            
+            .color-palette {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Preview Page Styles */
+        .preview-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Tajawal', sans-serif;
+            line-height: 1.6;
+        }
+        
+        .preview-page h1 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .preview-page .post-meta {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .preview-page .post-content {
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .preview-page .post-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 15px 0;
+        }
+        
+        .preview-page .post-tags {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .preview-page .tag {
+            background-color: #f1f1f1;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        
+        .preview-page blockquote {
+            border-right: 4px solid #4a6da7;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            font-style: italic;
+        }
+        
+        .preview-page pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* أزرار تنسيق إضافية */
+        .format-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+        }
+        
+        .format-button {
+            padding: 6px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: var(--text-color);
+        }
+        
+        .format-button:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .format-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .text-effects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .text-effect-button {
+            text-align: center;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: var(--card-bg);
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+        
+        .text-effect-button:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .advanced-format-modal-content {
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        .style-preview {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            min-height: 60px;
+            background-color: var(--bg-color);
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        .color-picker-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+        
+        .color-box:hover {
+            transform: scale(1.1);
+        }
+        
+        .templates-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .template-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .template-preview {
+            height: 120px;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .template-name {
+            padding: 8px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.85rem;
+            background-color: var(--card-bg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div></div>
+            <h1>محرر النصوص العربي الاحترافي</h1>
+            <button class="theme-toggle" id="theme-toggle" title="تبديل المظهر">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+        
+        <div class="editor-container">
+            <input type="text" class="title-input" placeholder="عنوان المقال..." dir="rtl">
+            
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <button onclick="execCommand('bold')" title="غامق"><i class="fas fa-bold"></i></button>
+                    <button onclick="execCommand('italic')" title="مائل"><i class="fas fa-italic"></i></button>
+                    <button onclick="execCommand('underline')" title="تحته خط"><i class="fas fa-underline"></i></button>
+                    <button onclick="execCommand('strikeThrough')" title="يتوسطه خط"><i class="fas fa-strikethrough"></i></button>
+                    <button onclick="execCommand('subscript')" title="نص منخفض"><i class="fas fa-subscript"></i></button>
+                    <button onclick="execCommand('superscript')" title="نص مرتفع"><i class="fas fa-superscript"></i></button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button onclick="execCommand('justifyRight')" title="محاذاة لليمين"><i class="fas fa-align-right"></i></button>
+                    <button onclick="execCommand('justifyCenter')" title="توسيط"><i class="fas fa-align-center"></i></button>
+                    <button onclick="execCommand('justifyLeft')" title="محاذاة لليسار"><i class="fas fa-align-left"></i></button>
+                    <button onclick="execCommand('justifyFull')" title="ضبط"><i class="fas fa-align-justify"></i></button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button onclick="execCommand('insertUnorderedList')" title="قائمة نقطية"><i class="fas fa-list-ul"></i></button>
+                    <button onclick="execCommand('insertOrderedList')" title="قائمة مرقمة"><i class="fas fa-list-ol"></i></button>
+                    <button onclick="execCommand('indent')" title="زيادة المسافة البادئة"><i class="fas fa-indent"></i></button>
+                    <button onclick="execCommand('outdent')" title="تقليل المسافة البادئة"><i class="fas fa-outdent"></i></button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button onclick="insertLink()" title="إضافة رابط"><i class="fas fa-link"></i></button>
+                    <button onclick="insertImage()" title="إضافة صورة"><i class="fas fa-image"></i></button>
+                    <button onclick="insertTable()" title="إضافة جدول"><i class="fas fa-table"></i></button>
+                    <button onclick="execCommand('insertHorizontalRule')" title="إضافة خط أفقي"><i class="fas fa-minus"></i></button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <div class="toolbar-dropdown">
+                        <button class="dropdown-button" title="إضافة عناصر خاصة">
+                            <i class="fas fa-plus-circle"></i>
+                            <span class="caret">▼</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <button onclick="insertEmoji()" class="emoji-btn"><i class="far fa-smile"></i> رمز تعبيري</button>
+                            <button onclick="insertBlockquote()"><i class="fas fa-quote-right"></i> اقتباس</button>
+                            <button onclick="insertFancyDivider()"><i class="fas fa-grip-lines"></i> فاصل مزخرف</button>
+                            <button onclick="insertCode()"><i class="fas fa-code"></i> كود برمجي</button>
+                            <button onclick="insertAlert('info')"><i class="fas fa-info-circle"></i> تنبيه معلومات</button>
+                            <button onclick="insertAlert('warning')"><i class="fas fa-exclamation-triangle"></i> تنبيه تحذير</button>
+                            <button onclick="insertAlert('success')"><i class="fas fa-check-circle"></i> تنبيه نجاح</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="toolbar-group">
+                    <select onchange="execCommandWithArg('formatBlock', this.value)" title="تنسيق">
+                        <option value="" disabled selected>تنسيق</option>
+                        <option value="h1">عنوان 1</option>
+                        <option value="h2">عنوان 2</option>
+                        <option value="h3">عنوان 3</option>
+                        <option value="h4">عنوان 4</option>
+                        <option value="h5">عنوان 5</option>
+                        <option value="h6">عنوان 6</option>
+                        <option value="p">فقرة</option>
+                        <option value="pre">نص منسق</option>
+                        <option value="blockquote">اقتباس</option>
+                    </select>
+                    
+                    <select onchange="execCommandWithArg('fontName', this.value)" title="الخط">
+                        <option value="" disabled selected>الخط</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Tajawal">Tajawal</option>
+                        <option value="Cairo">Cairo</option>
+                        <option value="Amiri">Amiri</option>
+                        <option value="Almarai">Almarai</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                    
+                    <select onchange="execCommandWithArg('fontSize', this.value)" title="الحجم">
+                        <option value="" disabled selected>الحجم</option>
+                        <option value="1">صغير جداً</option>
+                        <option value="2">صغير</option>
+                        <option value="3">عادي</option>
+                        <option value="4">متوسط</option>
+                        <option value="5">كبير</option>
+                        <option value="6">كبير جداً</option>
+                        <option value="7">ضخم</option>
+                    </select>
+                </div>
+                
+                <div class="toolbar-group">
+                    <input type="color" onchange="execCommandWithArg('foreColor', this.value)" title="لون النص">
+                    <input type="color" onchange="execCommandWithArg('hiliteColor', this.value)" title="لون الخلفية">
+                </div>
+                
+                <div class="toolbar-group">
+                    <button onclick="execCommand('undo')" title="تراجع"><i class="fas fa-undo"></i></button>
+                    <button onclick="execCommand('redo')" title="إعادة"><i class="fas fa-redo"></i></button>
+                    <button onclick="execCommand('removeFormat')" title="إزالة التنسيق"><i class="fas fa-eraser"></i></button>
+                    <button onclick="openAdvancedFormatting()" title="تنسيق متقدم"><i class="fas fa-magic"></i></button>
+                    <button onclick="openSettingsModal()" title="إعدادات"><i class="fas fa-cog"></i></button>
+                </div>
+            </div>
+            
+            <!-- أزرار تنسيق إضافية -->
+            <div class="format-buttons-container">
+                <button class="format-button" onclick="applyTextStyle('standard')" title="نص عادي"><i class="fas fa-font"></i> عادي</button>
+                <button class="format-button" onclick="applyTextStyle('heading')" title="عنوان"><i class="fas fa-heading"></i> عنوان</button>
+                <button class="format-button" onclick="applyTextStyle('subheading')" title="عنوان فرعي"><i class="fas fa-heading"></i> عنوان فرعي</button>
+                <button class="format-button" onclick="applyTextStyle('quote')" title="اقتباس"><i class="fas fa-quote-right"></i> اقتباس</button>
+                <button class="format-button" onclick="applyTextStyle('code')" title="كود"><i class="fas fa-code"></i> كود</button>
+                <button class="format-button" onclick="applyTextStyle('highlight')" title="تمييز"><i class="fas fa-highlighter"></i> تمييز</button>
+                <button class="format-button" onclick="toggleStyle('rtl')" title="اتجاه من اليمين إلى اليسار"><i class="fas fa-long-arrow-alt-left"></i> RTL</button>
+                <button class="format-button" onclick="toggleStyle('ltr')" title="اتجاه من اليسار إلى اليمين"><i class="fas fa-long-arrow-alt-right"></i> LTR</button>
+                <button class="format-button" onclick="insertSpecialCharacter()" title="إدراج حرف خاص"><i class="fas fa-omega"></i> حرف خاص</button>
+                <button class="format-button" onclick="openTemplatesModal()" title="قوالب جاهزة"><i class="fas fa-file-alt"></i> قوالب</button>
+                <button class="format-button" onclick="openColorPalette()" title="لوحة الألوان"><i class="fas fa-palette"></i> الألوان</button>
+            </div>
+            
+            <div class="editor-wrapper">
+                <div class="editor" id="editor" contenteditable="true" dir="rtl"></div>
+                <div class="preview preview-styles" id="preview"></div>
+            </div>
+            
+            <div class="tag-container">
+                <div id="tags"></div>
+                <input type="text" class="tag-input" placeholder="أضف وسوماً (اضغط Enter للإضافة)" id="tag-input">
+            </div>
+            
+            <div class="status-bar">
+                <span id="word-count">0 كلمة</span>
+                <span id="save-status">تم الحفظ</span>
+            </div>
+            
+            <div class="footer">
+                <button class="save-draft" onclick="saveDraft()">
+                    <i class="fas fa-save"></i> <span>حفظ كمسودة</span>
+                </button>
+                <button class="preview-toggle" onclick="togglePreview()">
+                    <i class="fas fa-eye"></i> <span>معاينة داخلية</span>
+                </button>
+                <button class="preview-browser" onclick="previewInBrowser()">
+                    <i class="fas fa-external-link-alt"></i> <span>معاينة في المتصفح</span>
+                </button>
+                <button class="copy-html" onclick="copyHTML()">
+                    <i class="fas fa-code"></i> <span>نسخ HTML</span>
+                </button>
+                <button class="publish" onclick="publishPost()">
+                    <i class="fas fa-paper-plane"></i> <span>نشر المقال</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- زر أدوات الهاتف المحمول -->
+    <button class="mobile-toolbar-toggle" id="mobile-toolbar-toggle">
+        <i class="fas fa-pen"></i>
+    </button>
+    
+    <div class="mobile-toolbar" id="mobile-toolbar">
+        <button onclick="execCommand('bold')" title="غامق"><i class="fas fa-bold"></i></button>
+        <button onclick="execCommand('italic')" title="مائل"><i class="fas fa-italic"></i></button>
+        <button onclick="execCommand('underline')" title="تحته خط"><i class="fas fa-underline"></i></button>
+        <button onclick="insertLink()" title="إضافة رابط"><i class="fas fa-link"></i></button>
+        <button onclick="insertImage()" title="إضافة صورة"><i class="fas fa-image"></i></button>
+        <button onclick="insertEmoji()" title="رمز تعبيري"><i class="far fa-smile"></i></button>
+        <button onclick="insertBlockquote()" title="اقتباس"><i class="fas fa-quote-right"></i></button>
+        <button onclick="execCommand('undo')" title="تراجع"><i class="fas fa-undo"></i></button>
+        <button onclick="openAdvancedFormatting()" title="تنسيق متقدم"><i class="fas fa-magic"></i></button>
+    </div>
+    
+    <!-- Modal for links -->
+    <div id="linkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة رابط</h3>
+                <span class="close" onclick="closeModal('linkModal')">&times;</span>
+            </div>
+            <input type="text" id="linkText" placeholder="نص الرابط">
+            <input type="url" id="linkUrl" placeholder="رابط URL">
+            <div class="settings-option">
+                <span>فتح في نافذة جديدة</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="link-new-window" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-option">
+                <span>نوع الرابط</span>
+                <select id="link-type">
+                    <option value="default">افتراضي</option>
+                    <option value="button">زر</option>
+                    <option value="download">تحميل</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('linkModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="insertLinkAction()">إضافة</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for images -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة صورة</h3>
+                <span class="close" onclick="closeModal('imageModal')">&times;</span>
+            </div>
+            <input type="url" id="imageUrl" placeholder="رابط الصورة">
+            <input type="text" id="imageAlt" placeholder="نص بديل">
+            <select id="imageAlign">
+                <option value="" disabled selected>محاذاة الصورة</option>
+                <option value="left">يسار</option>
+                <option value="center">وسط</option>
+                <option value="right">يمين</option>
+            </select>
+            <input type="number" id="imageWidth" placeholder="العرض (بالبكسل)" min="1">
+            <div class="settings-option">
+                <span>إضافة حدود للصورة</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="image-border">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-option">
+                <span>إضافة تأثير للصورة</span>
+                <select id="image-effect">
+                    <option value="none">بدون</option>
+                    <option value="rounded">حواف مستديرة</option>
+                    <option value="circle">دائرية</option>
+                    <option value="shadow">ظل</option>
+                    <option value="polaroid">بولارويد</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <span>إضافة شرح للصورة</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="image-caption">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <input type="text" id="image-caption-text" placeholder="نص الشرح (إذا تم تفعيله)" style="display: none;">
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('imageModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="insertImageAction()">إضافة</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for tables -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة جدول</h3>
+                <span class="close" onclick="closeModal('tableModal')">&times;</span>
+            </div>
+            <input type="number" id="tableRows" placeholder="عدد الصفوف" min="1" value="3">
+            <input type="number" id="tableCols" placeholder="عدد الأعمدة" min="1" value="3">
+            <select id="tableStyle">
+                <option value="default" selected>نمط افتراضي</option>
+                <option value="striped">مخطط</option>
+                <option value="bordered">إطار كامل</option>
+                <option value="hoverable">تأثير التمرير</option>
+                <option value="compact">مدمج</option>
+                <option value="colorful">ملون</option>
+            </select>
+            <div class="settings-option">
+                <span>إضافة رأس للجدول</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="table-header" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-option">
+                <span>جدول متجاوب</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="table-responsive" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('tableModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="insertTableAction()">إضافة</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for code insertion -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة كود برمجي</h3>
+                <span class="close" onclick="closeModal('codeModal')">&times;</span>
+            </div>
+            <select id="code-language">
+                <option value="text">نص عادي</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="javascript">JavaScript</option>
+                <option value="php">PHP</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="csharp">C#</option>
+                <option value="cpp">C++</option>
+                <option value="ruby">Ruby</option>
+                <option value="sql">SQL</option>
+                <option value="bash">Bash</option>
+                <option value="json">JSON</option>
+                <option value="xml">XML</option>
+                <option value="markdown">Markdown</option>
+            </select>
+            <textarea id="code-content" placeholder="أدخل الكود هنا..." rows="10"></textarea>
+            <div class="settings-option">
+                <span>إظهار أرقام الأسطر</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="code-show-line-numbers">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('codeModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="insertCodeAction()">إضافة</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for advanced formatting -->
+    <div id="advancedFormattingModal" class="modal">
+        <div class="modal-content advanced-format-modal-content">
+            <div class="modal-header">
+                <h3>تنسيق متقدم</h3>
+                <span class="close" onclick="closeModal('advancedFormattingModal')">&times;</span>
+            </div>
+            <div>
+                <h4>تأثيرات النص</h4>
+                <div class="text-effects-container">
+                    <button class="text-effect-button" onclick="applyTextEffect('shadow')">ظل</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('emboss')">بارز</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('glow')">متوهج</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('outline')">حدود</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('blur')">ضبابي</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('gradient')">متدرج</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('retro')">قديم</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('neon')">نيون</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('3d')">ثلاثي الأبعاد</button>
+                    <button class="text-effect-button" onclick="applyTextEffect('vintage')">فينتاج</button>
+                </div>
+                
+                <h4>معاينة النمط</h4>
+                <div id="stylePreview" class="style-preview">
+                    معاينة النمط المختار
+                </div>
+                
+                <h4>لوحة الألوان</h4>
+                <div class="color-picker-container" id="textColorPicker">
+                    <div class="color-box" style="background-color: #000000;" onclick="selectTextColor('#000000')"></div>
+                    <div class="color-box" style="background-color: #ffffff;" onclick="selectTextColor('#ffffff')"></div>
+                    <div class="color-box" style="background-color: #ff0000;" onclick="selectTextColor('#ff0000')"></div>
+                    <div class="color-box" style="background-color: #00ff00;" onclick="selectTextColor('#00ff00')"></div>
+                    <div class="color-box" style="background-color: #0000ff;" onclick="selectTextColor('#0000ff')"></div>
+                    <div class="color-box" style="background-color: #ffff00;" onclick="selectTextColor('#ffff00')"></div>
+                    <div class="color-box" style="background-color: #00ffff;" onclick="selectTextColor('#00ffff')"></div>
+                    <div class="color-box" style="background-color: #ff00ff;" onclick="selectTextColor('#ff00ff')"></div>
+                    <div class="color-box" style="background-color: #4a6da7;" onclick="selectTextColor('#4a6da7')"></div>
+                    <div class="color-box" style="background-color: #28a745;" onclick="selectTextColor('#28a745')"></div>
+                    <div class="color-box" style="background-color: #dc3545;" onclick="selectTextColor('#dc3545')"></div>
+                    <div class="color-box" style="background-color: #ffc107;" onclick="selectTextColor('#ffc107')"></div>
+                    <div class="color-box" style="background-color: #17a2b8;" onclick="selectTextColor('#17a2b8')"></div>
+                    <div class="color-box" style="background-color: #6c757d;" onclick="selectTextColor('#6c757d')"></div>
+                    <div class="color-box" style="background-color: #343a40;" onclick="selectTextColor('#343a40')"></div>
+                    <div class="color-box" style="background-color: #f8f9fa;" onclick="selectTextColor('#f8f9fa')"></div>
+                </div>
+                
+                <h4>لون الخلفية</h4>
+                <div class="color-picker-container" id="bgColorPicker">
+                    <div class="color-box" style="background-color: transparent;" onclick="selectBgColor('transparent')"></div>
+                    <div class="color-box" style="background-color: #ffffff;" onclick="selectBgColor('#ffffff')"></div>
+                    <div class="color-box" style="background-color: #f8f9fa;" onclick="selectBgColor('#f8f9fa')"></div>
+                    <div class="color-box" style="background-color: #e9ecef;" onclick="selectBgColor('#e9ecef')"></div>
+                    <div class="color-box" style="background-color: #dee2e6;" onclick="selectBgColor('#dee2e6')"></div>
+                    <div class="color-box" style="background-color: #f2f2f2;" onclick="selectBgColor('#f2f2f2')"></div>
+                    <div class="color-box" style="background-color: #e3f2fd;" onclick="selectBgColor('#e3f2fd')"></div>
+                    <div class="color-box" style="background-color: #d1ecf1;" onclick="selectBgColor('#d1ecf1')"></div>
+                    <div class="color-box" style="background-color: #d4edda;" onclick="selectBgColor('#d4edda')"></div>
+                    <div class="color-box" style="background-color: #fff3cd;" onclick="selectBgColor('#fff3cd')"></div>
+                    <div class="color-box" style="background-color: #f8d7da;" onclick="selectBgColor('#f8d7da')"></div>
+                    <div class="color-box" style="background-color: #ffebcd;" onclick="selectBgColor('#ffebcd')"></div>
+                    <div class="color-box" style="background-color: #f0fff0;" onclick="selectBgColor('#f0fff0')"></div>
+                    <div class="color-box" style="background-color: #f0f8ff;" onclick="selectBgColor('#f0f8ff')"></div>
+                    <div class="color-box" style="background-color: #faebd7;" onclick="selectBgColor('#faebd7')"></div>
+                    <div class="color-box" style="background-color: #fffaf0;" onclick="selectBgColor('#fffaf0')"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('advancedFormattingModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="applyAdvancedFormatting()">تطبيق</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for templates -->
+    <div id="templatesModal" class="modal">
+        <div class="modal-content advanced-format-modal-content">
+            <div class="modal-header">
+                <h3>قوالب جاهزة</h3>
+                <span class="close" onclick="closeModal('templatesModal')">&times;</span>
+            </div>
+            <p>اختر أحد القوالب الجاهزة لإضافته إلى المحرر:</p>
+            <div class="templates-container">
+                <div class="template-card" onclick="insertTemplate('article')">
+                    <div class="template-preview">مقال كامل مع عناوين وفقرات</div>
+                    <div class="template-name">قالب مقال</div>
+                </div>
+                <div class="template-card" onclick="insertTemplate('blogPost')">
+                    <div class="template-preview">منشور مدونة مع صور وأقسام</div>
+                    <div class="template-name">منشور مدونة</div>
+                </div>
+                <div class="template-card" onclick="insertTemplate('tutorial')">
+                    <div class="template-preview">شرح خطوات مع أرقام وصور</div>
+                    <div class="template-name">قالب شرح</div>
+                </div>
+                <div class="template-card" onclick="insertTemplate('quote')">
+                    <div class="template-preview">اقتباس جميل مع اسم القائل</div>
+                    <div class="template-name">اقتباس</div>
+                </div>
+                <div class="template-card" onclick="insertTemplate('list')">
+                    <div class="template-preview">قائمة منسقة بعناصر متعددة</div>
+                    <div class="template-name">قائمة</div>
+                </div>
+                <div class="template-card" onclick="insertTemplate('faq')">
+                    <div class="template-preview">أسئلة وأجوبة شائعة</div>
+                    <div class="template-name">أسئلة وأجوبة</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('templatesModal')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for special characters -->
+    <div id="specialCharactersModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إدراج حرف خاص</h3>
+                <span class="close" onclick="closeModal('specialCharactersModal')">&times;</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;">
+                <button class="format-button" onclick="insertCharacter('٪')">٪</button>
+                <button class="format-button" onclick="insertCharacter('؟')">؟</button>
+                <button class="format-button" onclick="insertCharacter('؛')">؛</button>
+                <button class="format-button" onclick="insertCharacter('،')">،</button>
+                <button class="format-button" onclick="insertCharacter('~')">~</button>
+                <button class="format-button" onclick="insertCharacter('#');">#</button>
+                <button class="format-button" onclick="insertCharacter('$');">$</button>
+                <button class="format-button" onclick="insertCharacter('©');">©</button>
+                <button class="format-button" onclick="insertCharacter('®');">®</button>
+                <button class="format-button" onclick="insertCharacter('™');">™</button>
+                <button class="format-button" onclick="insertCharacter('°');">°</button>
+                <button class="format-button" onclick="insertCharacter('±');">±</button>
+                <button class="format-button" onclick="insertCharacter('×');">×</button>
+                <button class="format-button" onclick="insertCharacter('÷');">÷</button>
+                <button class="format-button" onclick="insertCharacter('π');">π</button>
+                <button class="format-button" onclick="insertCharacter('√');">√</button>
+                <button class="format-button" onclick="insertCharacter('∞');">∞</button>
+                <button class="format-button" onclick="insertCharacter('≠');">≠</button>
+                <button class="format-button" onclick="insertCharacter('≤');">≤</button>
+                <button class="format-button" onclick="insertCharacter('≥');">≥</button>
+                <button class="format-button" onclick="insertCharacter('♠');">♠</button>
+                <button class="format-button" onclick="insertCharacter('♣');">♣</button>
+                <button class="format-button" onclick="insertCharacter('♥');">♥</button>
+                <button class="format-button" onclick="insertCharacter('♦');">♦</button>
+                <button class="format-button" onclick="insertCharacter('«');">«</button>
+                <button class="format-button" onclick="insertCharacter('»');">»</button>
+                <button class="format-button" onclick="insertCharacter('✓');">✓</button>
+                <button class="format-button" onclick="insertCharacter('✗');">✗</button>
+                <button class="format-button" onclick="insertCharacter('✨');">✨</button>
+                <button class="format-button" onclick="insertCharacter('➤');">➤</button>
+                <button class="format-button" onclick="insertCharacter('•');">•</button>
+                <button class="format-button" onclick="insertCharacter('◆');">◆</button>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('specialCharactersModal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for color palette -->
+    <div id="colorPaletteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>لوحة الألوان</h3>
+                <span class="close" onclick="closeModal('colorPaletteModal')">&times;</span>
+            </div>
+            <h4>لون النص</h4>
+            <div class="color-picker-container">
+                <div class="color-box" style="background-color: #000000;" onclick="applyColor('#000000', 'text')"></div>
+                <div class="color-box" style="background-color: #444444;" onclick="applyColor('#444444', 'text')"></div>
+                <div class="color-box" style="background-color: #666666;" onclick="applyColor('#666666', 'text')"></div>
+                <div class="color-box" style="background-color: #999999;" onclick="applyColor('#999999', 'text')"></div>
+                <div class="color-box" style="background-color: #cccccc;" onclick="applyColor('#cccccc', 'text')"></div>
+                <div class="color-box" style="background-color: #ffffff; border: 1px solid #ddd;" onclick="applyColor('#ffffff', 'text')"></div>
+                <div class="color-box" style="background-color: #ff0000;" onclick="applyColor('#ff0000', 'text')"></div>
+                <div class="color-box" style="background-color: #ff4444;" onclick="applyColor('#ff4444', 'text')"></div>
+                <div class="color-box" style="background-color: #ff9900;" onclick="applyColor('#ff9900', 'text')"></div>
+                <div class="color-box" style="background-color: #ffff00;" onclick="applyColor('#ffff00', 'text')"></div>
+                <div class="color-box" style="background-color: #00ff00;" onclick="applyColor('#00ff00', 'text')"></div>
+                <div class="color-box" style="background-color: #00ffff;" onclick="applyColor('#00ffff', 'text')"></div>
+                <div class="color-box" style="background-color: #0000ff;" onclick="applyColor('#0000ff', 'text')"></div>
+                <div class="color-box" style="background-color: #9900ff;" onclick="applyColor('#9900ff', 'text')"></div>
+                <div class="color-box" style="background-color: #ff00ff;" onclick="applyColor('#ff00ff', 'text')"></div>
+                <div class="color-box" style="background-color: #990000;" onclick="applyColor('#990000', 'text')"></div>
+                <div class="color-box" style="background-color: #994400;" onclick="applyColor('#994400', 'text')"></div>
+                <div class="color-box" style="background-color: #996600;" onclick="applyColor('#996600', 'text')"></div>
+                <div class="color-box" style="background-color: #999900;" onclick="applyColor('#999900', 'text')"></div>
+                <div class="color-box" style="background-color: #009900;" onclick="applyColor('#009900', 'text')"></div>
+                <div class="color-box" style="background-color: #009999;" onclick="applyColor('#009999', 'text')"></div>
+                <div class="color-box" style="background-color: #0000cc;" onclick="applyColor('#0000cc', 'text')"></div>
+                <div class="color-box" style="background-color: #990099;" onclick="applyColor('#990099', 'text')"></div>
+                <div class="color-box" style="background-color: #4a6da7;" onclick="applyColor('#4a6da7', 'text')"></div>
+            </div>
+            
+            <h4>لون الخلفية</h4>
+            <div class="color-picker-container">
+                <div class="color-box" style="background-color: transparent; border: 1px solid #ddd;" onclick="applyColor('transparent', 'background')"></div>
+                <div class="color-box" style="background-color: #ffffff; border: 1px solid #ddd;" onclick="applyColor('#ffffff', 'background')"></div>
+                <div class="color-box" style="background-color: #f8f9fa;" onclick="applyColor('#f8f9fa', 'background')"></div>
+                <div class="color-box" style="background-color: #e9ecef;" onclick="applyColor('#e9ecef', 'background')"></div>
+                <div class="color-box" style="background-color: #dee2e6;" onclick="applyColor('#dee2e6', 'background')"></div>
+                <div class="color-box" style="background-color: #ffdddd;" onclick="applyColor('#ffdddd', 'background')"></div>
+                <div class="color-box" style="background-color: #ffffcc;" onclick="applyColor('#ffffcc', 'background')"></div>
+                <div class="color-box" style="background-color: #ddffdd;" onclick="applyColor('#ddffdd', 'background')"></div>
+                <div class="color-box" style="background-color: #ddffff;" onclick="applyColor('#ddffff', 'background')"></div>
+                <div class="color-box" style="background-color: #ddddff;" onclick="applyColor('#ddddff', 'background')"></div>
+                <div class="color-box" style="background-color: #ffddff;" onclick="applyColor('#ffddff', 'background')"></div>
+                <div class="color-box" style="background-color: #f8d7da;" onclick="applyColor('#f8d7da', 'background')"></div>
+                <div class="color-box" style="background-color: #fff3cd;" onclick="applyColor('#fff3cd', 'background')"></div>
+                <div class="color-box" style="background-color: #d4edda;" onclick="applyColor('#d4edda', 'background')"></div>
+                <div class="color-box" style="background-color: #d1ecf1;" onclick="applyColor('#d1ecf1', 'background')"></div>
+                <div class="color-box" style="background-color: #e2e3e5;" onclick="applyColor('#e2e3e5', 'background')"></div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('colorPaletteModal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for publishing -->
+    <div id="publishModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>نشر المقال</h3>
+                <span class="close" onclick="closeModal('publishModal')">&times;</span>
+            </div>
+            <p>هل أنت متأكد من رغبتك في نشر هذا المقال على مدونتك؟</p>
+            <textarea id="postDescription" placeholder="وصف مختصر للمقال (سيظهر في الملخص)" rows="3"></textarea>
+            <select id="postCategory">
+                <option value="" disabled selected>اختر تصنيف المقال</option>
+                <option value="technology">تكنولوجيا</option>
+                <option value="science">علوم</option>
+                <option value="health">صحة</option>
+                <option value="art">فن وثقافة</option>
+                <option value="sports">رياضة</option>
+                <option value="food">طعام</option>
+                <option value="travel">سفر</option>
+                <option value="education">تعليم</option>
+                <option value="news">أخبار</option>
+                <option value="other">أخرى</option>
+            </select>
+            <div class="settings-option">
+                <span>السماح بالتعليقات</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="allow-comments" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-option">
+                <span>نشر فوري</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="publish-immediately" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('publishModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="confirmPublish()">تأكيد النشر</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for HTML Copy -->
+    <div id="htmlModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>نسخ كود HTML</h3>
+                <span class="close" onclick="closeModal('htmlModal')">&times;</span>
+            </div>
+            <p>يمكنك نسخ كود HTML للمقال من هنا:</p>
+            <textarea id="htmlCode" readonly class="copy-modal"></textarea>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('htmlModal')">إغلاق</button>
+                <button class="modal-confirm" onclick="copyHtmlToClipboard()">نسخ الكود</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Text Copy -->
+    <div id="textModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>نسخ النص</h3>
+                <span class="close" onclick="closeModal('textModal')">&times;</span>
+            </div>
+            <p>يمكنك نسخ النص البسيط للمقال من هنا:</p>
+            <textarea id="plainText" readonly class="copy-modal"></textarea>
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('textModal')">إغلاق</button>
+                <button class="modal-confirm" onclick="copyTextToClipboard()">نسخ النص</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Emoji Picker Modal -->
+    <div id="emoji-picker" class="emoji-picker">
+        <div class="emoji-categories">
+            <button onclick="showEmojiCategory('smileys')">😀</button>
+            <button onclick="showEmojiCategory('animals')">🐱</button>
+            <button onclick="showEmojiCategory('food')">🍎</button>
+            <button onclick="showEmojiCategory('travel')">✈️</button>
+            <button onclick="showEmojiCategory('activities')">⚽</button>
+            <button onclick="showEmojiCategory('objects')">💡</button>
+            <button onclick="showEmojiCategory('symbols')">❤️</button>
+            <button onclick="showEmojiCategory('flags')">🏁</button>
+        </div>
+        <div id="emoji-container"></div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إعدادات المحرر</h3>
+                <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+            </div>
+            
+            <div class="settings-section">
+                <h4>المظهر</h4>
+                <div class="settings-option">
+                    <span>الوضع الليلي</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <span>خط المحرر</span>
+                    <select id="editor-font" onchange="changeEditorFont(this.value)">
+                        <option value="Tajawal" selected>Tajawal</option>
+                        <option value="Cairo">Cairo</option>
+                        <option value="Amiri">Amiri</option>
+                        <option value="Almarai">Almarai</option>
+                    </select>
+                </div>
+                <div class="settings-option">
+                    <span>حجم خط المحرر</span>
+                    <select id="editor-font-size" onchange="changeEditorFontSize(this.value)">
+                        <option value="14px">صغير</option>
+                        <option value="16px" selected>متوسط</option>
+                        <option value="18px">كبير</option>
+                        <option value="20px">كبير جداً</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h4>سلوك المحرر</h4>
+                <div class="settings-option">
+                    <span>حفظ تلقائي</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-save-toggle" checked onchange="toggleAutoSave()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <span>عدد ثواني الحفظ التلقائي</span>
+                    <select id="auto-save-interval" onchange="changeAutoSaveInterval(this.value)">
+                        <option value="1000">1 ثانية</option>
+                        <option value="3000" selected>3 ثواني</option>
+                        <option value="5000">5 ثواني</option>
+                        <option value="10000">10 ثواني</option>
+                    </select>
+                </div>
+                <div class="settings-option">
+                    <span>تدقيق إملائي</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="spellcheck-toggle" onchange="toggleSpellCheck()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <span>معاينة في المتصفح بتنسيق بلوجر</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="blogger-preview" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h4>خيارات المقال</h4>
+                <div class="settings-option">
+                    <span>نشر تلقائي للوسوم في المقال</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-tag-publish" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <span>نوع ترميز النص</span>
+                    <select id="text-encoding">
+                        <option value="UTF-8" selected>UTF-8</option>
+                        <option value="Windows-1256">Windows-1256</option>
+                    </select>
+                </div>
+                <div class="settings-option">
+                    <span>تخصيص مظهر المعاينة</span>
+                    <select id="preview-style">
+                        <option value="blogger" selected>بلوجر</option>
+                        <option value="modern">حديث</option>
+                        <option value="minimal">بسيط</option>
+                        <option value="classic">كلاسيكي</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-cancel" onclick="closeModal('settingsModal')">إلغاء</button>
+                <button class="modal-confirm" onclick="saveSettings()">حفظ الإعدادات</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">تم النسخ بنجاح</span>
+    </div>
+
+    <script>
+        // المتغيرات العامة
+        let autoSaveEnabled = true;
+        let autoSaveInterval = 3000;
+        let saveTimeout;
+        let currentTheme = 'light';
+        let mobileToolbarVisible = false;
+        let isMobile = window.innerWidth <= 768;
+        let currentTextColor = '#000000';
+        let currentBgColor = 'transparent';
+        let currentTextEffect = '';
+        
+        // تهيئة المحرر
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            loadDraft();
+            
+            document.getElementById('tag-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    addTag(this.value.trim());
+                    this.value = '';
+                }
+            });
+            
+            document.getElementById('editor').addEventListener('input', function() {
+                updateWordCount();
+                if (autoSaveEnabled) {
+                    autoSave();
+                }
+            });
+            
+            // تحديث قيم الإعدادات في واجهة المستخدم
+            document.getElementById('dark-mode-toggle').checked = currentTheme === 'dark';
+            document.getElementById('auto-save-toggle').checked = autoSaveEnabled;
+            document.getElementById('auto-save-interval').value = autoSaveInterval.toString();
+            
+            // إعداد التدقيق الإملائي
+            document.getElementById('editor').spellcheck = document.getElementById('spellcheck-toggle').checked;
+            
+            // إعداد مستمع لزر تبديل المظهر
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // إعداد مستمع لزر أدوات الهاتف المحمول
+            document.getElementById('mobile-toolbar-toggle').addEventListener('click', toggleMobileToolbar);
+            
+            // إضافة الرموز التعبيرية
+            loadEmojis();
+            
+            // إضافة مستمع للنقر خارج اختيار الرموز التعبيرية
+            document.addEventListener('click', function(e) {
+                const emojiPicker = document.getElementById('emoji-picker');
+                const targetElement = e.target;
+                if (emojiPicker.style.display === 'grid' && 
+                    !emojiPicker.contains(targetElement) && 
+                    !targetElement.classList.contains('emoji-btn')) {
+                    emojiPicker.style.display = 'none';
+                }
+            });
+            
+            // إضافة مستمع لتغيير حجم النافذة
+            window.addEventListener('resize', function() {
+                isMobile = window.innerWidth <= 768;
+                if (!isMobile) {
+                    document.getElementById('mobile-toolbar').style.display = 'none';
+                    mobileToolbarVisible = false;
+                }
+            });
+            
+            // تكييف واجهة المستخدم مع الأجهزة المحمولة
+            if (isMobile) {
+                document.querySelector('.toolbar').style.display = 'none';
+                document.querySelector('.format-buttons-container').style.display = 'none';
+                document.getElementById('mobile-toolbar-toggle').style.display = 'flex';
+            } else {
+                document.querySelector('.toolbar').style.display = 'flex';
+                document.querySelector('.format-buttons-container').style.display = 'flex';
+                document.getElementById('mobile-toolbar-toggle').style.display = 'none';
+            }
+            
+            // مستمع للتبديل بين نص الشرح للصورة
+            document.getElementById('image-caption').addEventListener('change', function() {
+                document.getElementById('image-caption-text').style.display = this.checked ? 'block' : 'none';
+            });
+        });
+        
+        // وظائف أساسية للمحرر
+        
+        // تنفيذ أوامر التحرير
+        function execCommand(command) {
+            document.getElementById('editor').focus();
+            document.execCommand(command, false, null);
+        }
+        
+        function execCommandWithArg(command, arg) {
+            document.getElementById('editor').focus();
+            document.execCommand(command, false, arg);
+        }
+        
+        // تبديل شريط أدوات الهاتف المحمول
+        function toggleMobileToolbar() {
+            const mobileToolbar = document.getElementById('mobile-toolbar');
+            mobileToolbarVisible = !mobileToolbarVisible;
+            
+            if (mobileToolbarVisible) {
+                mobileToolbar.style.display = 'flex';
+            } else {
+                mobileToolbar.style.display = 'none';
+            }
+        }
+        
+        // إدارة الوسوم
+        function addTag(tagText) {
+            const tagsContainer = document.getElementById('tags');
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.innerHTML = tagText + '<span onclick="removeTag(this.parentNode)">×</span>';
+            tagsContainer.appendChild(tag);
+        }
+        
+        function removeTag(tagElement) {
+            tagElement.remove();
+        }
+        
+        // تبديل المعاينة
+        function togglePreview() {
+            const editor = document.getElementById('editor');
+            const preview = document.getElementById('preview');
+            const previewButton = document.querySelector('.preview-toggle');
+            
+            if (preview.style.display === 'block') {
+                preview.style.display = 'none';
+                editor.style.display = 'block';
+                previewButton.innerHTML = '<i class="fas fa-eye"></i> <span>معاينة داخلية</span>';
+            } else {
+                preview.innerHTML = editor.innerHTML;
+                preview.style.display = 'block';
+                editor.style.display = 'none';
+                previewButton.innerHTML = '<i class="fas fa-edit"></i> <span>تحرير</span>';
+            }
+        }
+        
+        // معاينة في المتصفح
+        function previewInBrowser() {
+            const title = document.querySelector('.title-input').value || 'معاينة المقال';
+            const content = document.getElementById('editor').innerHTML;
+            
+            // جمع الوسوم
+            const tags = [];
+            document.querySelectorAll('.tag').forEach(tag => {
+                tags.push(tag.textContent.replace('×', ''));
+            });
+            
+            // إنشاء صفحة معاينة
+            let previewWindow = window.open('', '_blank');
+            
+            // اختيار نمط المعاينة
+            const previewStyle = document.getElementById('preview-style').value || 'blogger';
+            
+            // إنشاء HTML للمعاينة
+            let previewHTML = `
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title} - معاينة</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
+                <style>
+                    body {
+                        font-family: 'Tajawal', sans-serif;
+                        line-height: 1.6;
+                        color: #333;
+                        background: ${previewStyle === 'minimal' ? '#fff' : '#f5f5f5'};
+                        margin: 0;
+                        padding: 0;
+                        direction: rtl;
+                    }
+                    
+                    .preview-page {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+                    
+                    .preview-header {
+                        text-align: center;
+                        margin-bottom: ${previewStyle === 'minimal' ? '20px' : '30px'};
+                        ${previewStyle === 'classic' ? 'border-bottom: 2px solid #ddd; padding-bottom: 20px;' : ''}
+                    }
+                    
+                    .preview-page h1 {
+                        font-size: ${previewStyle === 'minimal' ? '1.8rem' : '2.2rem'};
+                        margin-bottom: 10px;
+                        color: ${previewStyle === 'modern' ? '#2c3e50' : '#333'};
+                        font-weight: ${previewStyle === 'modern' ? '600' : '700'};
+                    }
+                    
+                    .preview-page .post-meta {
+                        font-size: 0.9rem;
+                        color: #777;
+                        ${previewStyle === 'modern' ? 'text-transform: uppercase; letter-spacing: 1px;' : ''}
+                    }
+                    
+                    .preview-page .post-content {
+                        padding: ${previewStyle === 'minimal' ? '0' : '20px'};
+                        background: #fff;
+                        ${previewStyle !== 'minimal' ? 'border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);' : ''}
+                    }
+                    
+                    .preview-page .post-content img {
+                        max-width: 100%;
+                        height: auto;
+                        margin: 15px 0;
+                        ${previewStyle === 'modern' ? 'border-radius: 4px;' : ''}
+                    }
+                    
+                    .preview-page .post-tags {
+                        margin-top: 30px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                    }
+                    
+                    .preview-page .tag {
+                        background-color: ${previewStyle === 'modern' ? '#e3f2fd' : '#f1f1f1'};
+                        padding: 5px 12px;
+                        border-radius: 15px;
+                        font-size: 0.85rem;
+                        color: ${previewStyle === 'modern' ? '#1565c0' : '#555'};
+                    }
+                    
+                    .preview-page blockquote {
+                        border-right: 4px solid ${previewStyle === 'modern' ? '#3498db' : '#4a6da7'};
+                        padding: 10px 20px;
+                        margin: 20px 0;
+                        background-color: ${previewStyle === 'modern' ? '#f8f9fa' : '#f9f9f9'};
+                        font-style: italic;
+                    }
+                    
+                    .preview-page pre {
+                        background-color: #f5f5f5;
+                        padding: 15px;
+                        border-radius: 5px;
+                        overflow-x: auto;
+                        font-family: 'Courier New', monospace;
+                    }
+                    
+                    .preview-page code {
+                        background-color: rgba(0, 0, 0, 0.05);
+                        padding: 2px 4px;
+                        border-radius: 3px;
+                        font-family: 'Courier New', monospace;
+                    }
+                    
+                    .preview-page table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 20px 0;
+                    }
+                    
+                    .preview-page th, .preview-page td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                    }
+                    
+                    .preview-page th {
+                        background-color: #f2f2f2;
+                        font-weight: bold;
+                    }
+                    
+                    .preview-page tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    
+                    .preview-footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        border-top: 1px solid #eee;
+                        color: #777;
+                        font-size: 0.9rem;
+                    }
+                    
+                    /* Responsive design */
+                    @media (max-width: 768px) {
+                        .preview-page {
+                            padding: 15px;
+                        }
+                        
+                        .preview-page h1 {
+                            font-size: 1.8rem;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="preview-page">
+                    <div class="preview-header">
+                        <h1>${title}</h1>
+                        <div class="post-meta">
+                            <span>${new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        ${content}
+                    </div>
+                    
+                    <div class="post-tags">
+                        ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    
+                    <div class="preview-footer">
+                        معاينة المقال - جميع الحقوق محفوظة © ${new Date().getFullYear()}
+                    </div>
+                </div>
+            </body>
+            </html>
+            `;
+            
+            previewWindow.document.write(previewHTML);
+            previewWindow.document.close();
+        }
+        
+        // تحديث عدد الكلمات
+        function updateWordCount() {
+            const text = document.getElementById('editor').innerText;
+            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('word-count').textContent = wordCount + ' كلمة';
+        }
+        
+        // حفظ تلقائي
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            document.getElementById('save-status').textContent = 'جارِ الحفظ...';
+            
+            saveTimeout = setTimeout(function() {
+                saveDraft(true);
+            }, autoSaveInterval);
+        }
+        
+        // حفظ المسودة
+        function saveDraft(isAutoSave = false) {
+            const title = document.querySelector('.title-input').value;
+            const content = document.getElementById('editor').innerHTML;
+            
+            // حفظ في التخزين المحلي
+            localStorage.setItem('blogEditor_title', title);
+            localStorage.setItem('blogEditor_content', content);
+            
+            // حفظ الوسوم
+            const tags = [];
+            document.querySelectorAll('.tag').forEach(tag => {
+                tags.push(tag.textContent.replace('×', ''));
+            });
+            localStorage.setItem('blogEditor_tags', JSON.stringify(tags));
+            
+            document.getElementById('save-status').textContent = 'تم الحفظ';
+            
+            if (!isAutoSave) {
+                showToast('تم حفظ المسودة بنجاح', 'success');
+            }
+        }
+        
+        // تحميل المسودة
+        function loadDraft() {
+            const title = localStorage.getItem('blogEditor_title');
+            const content = localStorage.getItem('blogEditor_content');
+            const tags = JSON.parse(localStorage.getItem('blogEditor_tags') || '[]');
+            
+            if (title) document.querySelector('.title-input').value = title;
+            if (content) document.getElementById('editor').innerHTML = content;
+            
+            tags.forEach(tag => addTag(tag));
+            updateWordCount();
+        }
+        
+        // نسخ HTML
+        function copyHTML() {
+            const content = document.getElementById('editor').innerHTML;
+            const htmlTextarea = document.getElementById('htmlCode');
+            htmlTextarea.value = content;
+            openModal('htmlModal');
+        }
+        
+        function copyHtmlToClipboard() {
+            const htmlTextarea = document.getElementById('htmlCode');
+            htmlTextarea.select();
+            document.execCommand('copy');
+            closeModal('htmlModal');
+            showToast('تم نسخ كود HTML بنجاح', 'success');
+        }
+        
+        // نسخ النص
+        function copyText() {
+            const content = document.getElementById('editor').innerText;
+            const textTextarea = document.getElementById('plainText');
+            textTextarea.value = content;
+            openModal('textModal');
+        }
+        
+        function copyTextToClipboard() {
+            const textTextarea = document.getElementById('plainText');
+            textTextarea.select();
+            document.execCommand('copy');
+            closeModal('textModal');
+            showToast('تم نسخ النص بنجاح', 'success');
+        }
+        
+        // نشر المقال
+        function publishPost() {
+            if (!document.querySelector('.title-input').value.trim()) {
+                showToast('يرجى إدخال عنوان للمقال قبل النشر', 'error');
+                return;
+            }
+            
+            if (!document.getElementById('editor').textContent.trim()) {
+                showToast('يرجى إدخال محتوى للمقال قبل النشر', 'error');
+                return;
+            }
+            
+            openModal('publishModal');
+        }
+        
+        function confirmPublish() {
+            const title = document.querySelector('.title-input').value;
+            const content = document.getElementById('editor').innerHTML;
+            const description = document.getElementById('postDescription').value;
+            const category = document.getElementById('postCategory').value;
+            const allowComments = document.getElementById('allow-comments').checked;
+            const publishImmediately = document.getElementById('publish-immediately').checked;
+            
+            // جمع الوسوم
+            const tags = [];
+            document.querySelectorAll('.tag').forEach(tag => {
+                tags.push(tag.textContent.replace('×', ''));
+            });
+            
+            // هنا يمكنك إضافة الكود الخاص بإرسال المقال إلى بلوجر
+            // باستخدام API الخاص ببلوجر
+            
+            closeModal('publishModal');
+            showToast('تم نشر المقال بنجاح!', 'success');
+            
+            // يمكنك إضافة المزيد من التفاصيل هنا، مثل مسح المحرر أو إعادة توجيه المستخدم
+        }
+        
+        // إدراج رابط
+        function insertLink() {
+            openModal('linkModal');
+        }
+        
+        function insertLinkAction() {
+            const text = document.getElementById('linkText').value;
+            const url = document.getElementById('linkUrl').value;
+            const newWindow = document.getElementById('link-new-window').checked;
+            const linkType = document.getElementById('link-type').value;
+            
+            if (url) {
+                const editor = document.getElementById('editor');
+                editor.focus();
+                
+                const selection = window.getSelection();
+                const selectedText = selection.toString();
+                const linkText = text || selectedText || url;
+                
+                const target = newWindow ? ' target="_blank" rel="noopener noreferrer"' : '';
+                
+                if (linkType === 'button') {
+                    // إضافة رابط كزر
+                    document.execCommand('insertHTML', false, 
+                        `<a href="${url}"${target} style="display: inline-block; padding: 8px 16px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">${linkText}</a>`);
+                } else if (linkType === 'download') {
+                    // إضافة رابط تحميل
+                    document.execCommand('insertHTML', false, 
+                        `<a href="${url}"${target} download style="display: inline-flex; align-items: center; color: var(--primary-color);"><i class="fas fa-download" style="margin-left: 5px;"></i>${linkText}</a>`);
+                } else {
+                    // إضافة رابط عادي
+                    document.execCommand('insertHTML', false, 
+                        `<a href="${url}"${target}>${linkText}</a>`);
+                }
+            }
+            
+            closeModal('linkModal');
+            document.getElementById('linkText').value = '';
+            document.getElementById('linkUrl').value = '';
+        }
+        
+        // إدراج صورة
+        function insertImage() {
+            openModal('imageModal');
+        }
+        
+        function insertImageAction() {
+            const url = document.getElementById('imageUrl').value;
+            const alt = document.getElementById('imageAlt').value;
+            const align = document.getElementById('imageAlign').value;
+            const width = document.getElementById('imageWidth').value;
+            const border = document.getElementById('image-border').checked;
+            const effect = document.getElementById('image-effect').value;
+            const caption = document.getElementById('image-caption').checked;
+            const captionText = document.getElementById('image-caption-text').value;
+            
+            if (url) {
+                const editor = document.getElementById('editor');
+                editor.focus();
+                
+                let style = 'max-width: 100%; height: auto;';
+                if (width) style += ` width: ${width}px;`;
+                if (align) {
+                    if (align === 'center') {
+                        style += ' display: block; margin-left: auto; margin-right: auto;';
+                    } else {
+                        style += ` float: ${align}; margin: 10px;`;
+                    }
+                }
+                if (border) {
+                    style += ' border: 1px solid #ddd; padding: 5px; background-color: #fff;';
+                }
+                
+                // إضافة تأثيرات إضافية للصورة
+                if (effect === 'rounded') {
+                    style += ' border-radius: 8px;';
+                } else if (effect === 'circle') {
+                    style += ' border-radius: 50%;';
+                } else if (effect === 'shadow') {
+                    style += ' box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);';
+                } else if (effect === 'polaroid') {
+                    style += ' border: 10px solid white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);';
+                }
+                
+                let imageHTML = `<img src="${url}" alt="${alt}" style="${style}">`;
+                
+                // إضافة شرح للصورة إذا تم اختياره
+                if (caption && captionText) {
+                    imageHTML = `<figure style="text-align: center; margin: 15px 0;">
+                        ${imageHTML}
+                        <figcaption style="font-size: 0.9em; color: #666; margin-top: 5px;">${captionText}</figcaption>
+                    </figure>`;
+                }
+                
+                document.execCommand('insertHTML', false, imageHTML);
+            }
+            
+            closeModal('imageModal');
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('imageAlt').value = '';
+            document.getElementById('imageAlign').value = '';
+            document.getElementById('imageWidth').value = '';
+            document.getElementById('image-effect').value = 'none';
+            document.getElementById('image-caption').checked = false;
+            document.getElementById('image-caption-text').value = '';
+            document.getElementById('image-caption-text').style.display = 'none';
+        }
+        
+        // إدراج جدول
+        function insertTable() {
+            openModal('tableModal');
+        }
+        
+        function insertTableAction() {
+            const rows = parseInt(document.getElementById('tableRows').value) || 3;
+            const cols = parseInt(document.getElementById('tableCols').value) || 3;
+            const style = document.getElementById('tableStyle').value;
+            const hasHeader = document.getElementById('table-header').checked;
+            const isResponsive = document.getElementById('table-responsive').checked;
+            
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            let tableClass = '';
+            let tableStyle = 'width: 100%; border-collapse: collapse; margin: 15px 0;';
+            let thStyle = 'border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;';
+            let tdStyle = 'border: 1px solid #ddd; padding: 8px;';
+            
+            // تعديل نمط الجدول
+            switch(style) {
+                case 'striped':
+                    tableClass = 'table-striped';
+                    tableStyle += ' border: 1px solid #ddd;';
+                    // إضافة نمط للصفوف المتناوبة في وظيفة إنشاء الصفوف
+                    break;
+                case 'bordered':
+                    tableClass = 'table-bordered';
+                    tableStyle += ' border: 2px solid #ddd;';
+                    thStyle = 'border: 2px solid #ddd; padding: 10px; background-color: #f2f2f2;';
+                    tdStyle = 'border: 2px solid #ddd; padding: 10px;';
+                    break;
+                case 'hoverable':
+                    tableClass = 'table-hover';
+                    tableStyle += ' border: 1px solid #ddd;';
+                    // سيتم إضافة تأثير التمرير عبر CSS
+                    break;
+                case 'compact':
+                    tableClass = 'table-sm';
+                    tableStyle += ' border: 1px solid #ddd;';
+                    thStyle = 'border: 1px solid #ddd; padding: 4px; background-color: #f2f2f2;';
+                    tdStyle = 'border: 1px solid #ddd; padding: 4px;';
+                    break;
+                case 'colorful':
+                    tableClass = 'table-colorful';
+                    tableStyle += ' border: 1px solid #ddd;';
+                    thStyle = 'border: 1px solid #ddd; padding: 8px; background-color: #4a6da7; color: white;';
+                    tdStyle = 'border: 1px solid #ddd; padding: 8px;';
+                    // إضافة لون للصفوف المتناوبة في وظيفة إنشاء الصفوف
+                    break;
+                default:
+                    tableClass = '';
+            }
+            
+            let responsiveWrapper = '';
+            if (isResponsive) {
+                responsiveWrapper = '<div style="overflow-x: auto; width: 100%;">';
+            }
+            
+            let tableHTML = `${responsiveWrapper}<table class="${tableClass}" style="${tableStyle}">`;
+            
+            // إنشاء رأس الجدول
+            if (hasHeader) {
+                tableHTML += '<thead><tr>';
+                for (let i = 0; i < cols; i++) {
+                    tableHTML += `<th style="${thStyle}">عنوان ${i+1}</th>`;
+                }
+                tableHTML += '</tr></thead>';
+            }
+            
+            tableHTML += '<tbody>';
+            
+            // إنشاء صفوف الجدول
+            for (let i = 0; i < rows - (hasHeader ? 1 : 0); i++) {
+                // إضافة صف مختلف اللون إذا كان النمط مخططًا أو ملونًا
+                let rowStyle = '';
+                if ((style === 'striped' || style === 'colorful') && i % 2 === 1) {
+                    rowStyle = style === 'colorful' ? ' style="background-color: #f2f8ff;"' : ' style="background-color: #f9f9f9;"';
+                }
+                
+                tableHTML += `<tr${rowStyle}>`;
+                for (let j = 0; j < cols; j++) {
+                    tableHTML += `<td style="${tdStyle}">محتوى</td>`;
+                }
+                tableHTML += '</tr>';
+            }
+            
+            tableHTML += '</tbody></table>';
+            
+            if (isResponsive) {
+                tableHTML += '</div>';
+            }
+            
+            document.execCommand('insertHTML', false, tableHTML);
+            closeModal('tableModal');
+        }
+        
+        // إدراج كود برمجي
+        function insertCode() {
+            openModal('codeModal');
+        }
+        
+        function insertCodeAction() {
+            const language = document.getElementById('code-language').value;
+            const code = document.getElementById('code-content').value;
+            const showLineNumbers = document.getElementById('code-show-line-numbers').checked;
+            
+            if (code) {
+                const editor = document.getElementById('editor');
+                editor.focus();
+                
+                let codeHTML = `<pre class="code-block" data-language="${language}"><code>${escapeHTML(code)}</code></pre>`;
+                
+                // إضافة أرقام الأسطر إذا تم تحديدها
+                if (showLineNumbers) {
+                    const lines = code.split('\n');
+                    let numberedCode = '';
+                    
+                    for (let i = 0; i < lines.length; i++) {
+                        numberedCode += `<span style="color: #999; user-select: none; margin-right: 10px;">${i+1}</span>${escapeHTML(lines[i])}\n`;
+                    }
+                    
+                    codeHTML = `<pre class="code-block" data-language="${language}" style="counter-reset: line;"><code style="display: block;">${numberedCode}</code></pre>`;
+                }
+                
+                document.execCommand('insertHTML', false, codeHTML);
+            }
+            
+            closeModal('codeModal');
+            document.getElementById('code-content').value = '';
+        }
+        
+        // إدراج اقتباس
+        function insertBlockquote() {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            const selection = window.getSelection();
+            const selectedText = selection.toString();
+            
+            if (selectedText) {
+                document.execCommand('insertHTML', false, `<blockquote>${selectedText}</blockquote>`);
+            } else {
+                document.execCommand('insertHTML', false, '<blockquote>أدخل النص هنا...</blockquote>');
+            }
+        }
+        
+// إدراج فاصل مزخرف
+function insertFancyDivider() {
+    const editor = document.getElementById('editor');
+    editor.focus();
+    
+    // استخدام كائن التحديد وإدراج المحتوى
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    // إنشاء عنصر الفاصل المزخرف
+    const divider = document.createElement('div');
+    divider.className = 'fancy-divider';
+    divider.textContent = '✧';
+    
+    // إدراج العنصر في الموضع الحالي
+    range.deleteContents();
+    range.insertNode(divider);
+    
+    // تحريك المؤشر بعد الفاصل
+    range.setStartAfter(divider);
+    range.setEndAfter(divider);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+        // إدراج تنبيه
+        function insertAlert(type) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            let alertStyle = '';
+            let icon = '';
+            let title = '';
+            
+            switch(type) {
+                case 'info':
+                    alertStyle = 'background-color: #e3f2fd; border-right: 4px solid #2196f3; color: #0c5496;';
+                    icon = 'fas fa-info-circle';
+                    title = 'معلومة';
+                    break;
+                case 'warning':
+                    alertStyle = 'background-color: #fff8e1; border-right: 4px solid #ffc107; color: #8a5c00;';
+                    icon = 'fas fa-exclamation-triangle';
+                    title = 'تحذير';
+                    break;
+                case 'success':
+                    alertStyle = 'background-color: #e8f5e9; border-right: 4px solid #4caf50; color: #2e7d32;';
+                    icon = 'fas fa-check-circle';
+                    title = 'نجاح';
+                    break;
+            }
+            
+            const alertHTML = `
+                <div style="${alertStyle} padding: 15px; margin: 15px 0; border-radius: 4px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <i class="${icon}" style="margin-left: 10px; font-size: 1.2em;"></i>
+                        <strong>${title}</strong>
+                    </div>
+                    <p>أدخل نص التنبيه هنا...</p>
+                </div>
+            `;
+            
+            document.execCommand('insertHTML', false, alertHTML);
+        }
+        
+        // إدراج رمز تعبيري
+        function insertEmoji() {
+            const emojiPicker = document.getElementById('emoji-picker');
+            const editor = document.getElementById('editor');
+            const rect = editor.getBoundingClientRect();
+            
+            if (isMobile) {
+                emojiPicker.style.left = '50%';
+                emojiPicker.style.top = 'auto';
+                emojiPicker.style.bottom = '80px';
+            } else {
+                emojiPicker.style.right = `${rect.right - rect.width / 2}px`;
+                emojiPicker.style.top = `${rect.top + 100}px`;
+            }
+            
+            if (emojiPicker.style.display === 'grid') {
+                emojiPicker.style.display = 'none';
+            } else {
+                emojiPicker.style.display = 'grid';
+                // تأكد من عرض فئة الوجوه عند فتح نافذة الرموز التعبيرية
+                showEmojiCategory('smileys');
+            }
+        }
+        
+        function addEmoji(emoji) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            document.execCommand('insertText', false, emoji);
+            document.getElementById('emoji-picker').style.display = 'none';
+        }
+        
+        function loadEmojis() {
+            const emojis = {
+                smileys: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭'],
+                animals: ['🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🙈', '🙉', '🙊', '🐒', '🐔', '🐧', '🐦', '🐤', '🐣', '🐥', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜'],
+                food: ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖'],
+                travel: ['✈️', '🚗', '🚕', '🚙', '🚌', '🚎', '🏎', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🦯', '🦽', '🦼', '🛴', '🚲', '🛵', '🏍', '🛺', '🚨', '🚔', '🚍', '🚘', '🚖', '🚡', '🚠', '🚟', '🚃', '🚋', '🚞', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉'],
+                activities: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🪁', '🏹', '🎣', '🤿', '🥊', '🥋', '🎽', '🛹', '🛷', '⛸', '🥌', '🎿', '⛷', '🏂', '🪂', '🏋️', '🤼', '🤸', '⛹️', '🤺', '🤾', '🏌️'],
+                objects: ['⌚', '📱', '📲', '💻', '⌨️', '🖥', '🖨', '🖱', '🖲', '🕹', '🗜', '💽', '💾', '💿', '📀', '📼', '📷', '📸', '📹', '🎥', '📽', '🎞', '📞', '☎️', '📟', '📠', '📺', '📻', '🎙', '🎚', '🎛', '🧭', '⏱', '⏲', '⏰', '🕰', '⌛', '⏳', '📡', '🔋', '🔌', '💡'],
+                symbols: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️', '☪️', '🕉', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'],
+                flags: ['🏁', '🚩', '🎌', '🏴', '🏳️', '🏳️‍🌈', '🏳️‍⚧️', '🏴‍☠️', '🇦🇪', '🇸🇦', '🇶🇦', '🇪🇬', '🇯🇴', '🇱🇧', '🇸🇾', '🇮🇶', '🇰🇼', '🇧🇭', '🇴🇲', '🇾🇪', '🇱🇾', '🇹🇳', '🇩🇿', '🇲🇦', '🇵🇸', '🇸🇩']
+            };
+            
+            showEmojiCategory('smileys');
+        }
+        
+        function showEmojiCategory(category) {
+            const emojis = {
+                smileys: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭'],
+                animals: ['🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🙈', '🙉', '🙊', '🐒', '🐔', '🐧', '🐦', '🐤', '🐣', '🐥', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜'],
+                food: ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖'],
+                travel: ['✈️', '🚗', '🚕', '🚙', '🚌', '🚎', '🏎', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🦯', '🦽', '🦼', '🛴', '🚲', '🛵', '🏍', '🛺', '🚨', '🚔', '🚍', '🚘', '🚖', '🚡', '🚠', '🚟', '🚃', '🚋', '🚞', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉'],
+                activities: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🪁', '🏹', '🎣', '🤿', '🥊', '🥋', '🎽', '🛹', '🛷', '⛸', '🥌', '🎿', '⛷', '🏂', '🪂', '🏋️', '🤼', '🤸', '⛹️', '🤺', '🤾', '🏌️'],
+                objects: ['⌚', '📱', '📲', '💻', '⌨️', '🖥', '🖨', '🖱', '🖲', '🕹', '🗜', '💽', '💾', '💿', '📀', '📼', '📷', '📸', '📹', '🎥', '📽', '🎞', '📞', '☎️', '📟', '📠', '📺', '📻', '🎙', '🎚', '🎛', '🧭', '⏱', '⏲', '⏰', '🕰', '⌛', '⏳', '📡', '🔋', '🔌', '💡'],
+                symbols: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️', '☪️', '🕉', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'],
+                flags: ['🏁', '🚩', '🎌', '🏴', '🏳️', '🏳️‍🌈', '🏳️‍⚧️', '🏴‍☠️', '🇦🇪', '🇸🇦', '🇶🇦', '🇪🇬', '🇯🇴', '🇱🇧', '🇸🇾', '🇮🇶', '🇰🇼', '🇧🇭', '🇴🇲', '🇾🇪', '🇱🇾', '🇹🇳', '🇩🇿', '🇲🇦', '🇵🇸', '🇸🇩']
+            };
+            
+            const container = document.getElementById('emoji-container');
+            container.innerHTML = '';
+            
+            emojis[category].forEach(emoji => {
+                const button = document.createElement('button');
+                button.innerHTML = emoji;
+                button.onclick = function() { addEmoji(emoji); };
+                container.appendChild(button);
+            });
+        }
+        
+        // وظائف التنسيق المتقدمة
+        function openAdvancedFormatting() {
+            openModal('advancedFormattingModal');
+        }
+        
+        function applyTextEffect(effect) {
+            currentTextEffect = effect;
+            const preview = document.getElementById('stylePreview');
+            preview.style = '';
+            
+            switch(effect) {
+                case 'shadow':
+                    preview.style.textShadow = '2px 2px 4px rgba(0,0,0,0.3)';
+                    break;
+                case 'emboss':
+                    preview.style.textShadow = '-1px -1px 1px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.5)';
+                    break;
+                case 'glow':
+                    preview.style.textShadow = '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6';
+                    preview.style.color = '#0073e6';
+                    break;
+                case 'outline':
+                    preview.style.textShadow = '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black';
+                    preview.style.color = 'white';
+                    break;
+                case 'blur':
+                    preview.style.color = 'transparent';
+                    preview.style.textShadow = '0 0 5px rgba(0,0,0,0.5)';
+                    break;
+                case 'gradient':
+                    preview.style.background = 'linear-gradient(45deg, #ff0000, #00ff00, #0000ff)';
+                    preview.style.webkitBackgroundClip = 'text';
+                    preview.style.backgroundClip = 'text';
+                    preview.style.color = 'transparent';
+                    break;
+                case 'retro':
+                    preview.style.color = '#fc0';
+                    preview.style.textShadow = '-1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000';
+                    preview.style.fontFamily = "'Press Start 2P', monospace";
+                    break;
+                case 'neon':
+                    preview.style.color = '#fff';
+                    preview.style.textShadow = '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6, 0 0 25px #0073e6, 0 0 30px #0073e6, 0 0 35px #0073e6';
+                    break;
+                case '3d':
+                    preview.style.textShadow = '0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15)';
+                    break;
+                case 'vintage':
+                    preview.style.color = '#a37';
+                    preview.style.fontFamily = 'Georgia, serif';
+                    preview.style.textShadow = '2px 2px 0px rgba(0,0,0,0.1)';
+                    break;
+            }
+            
+            if (currentTextColor) {
+                preview.style.color = currentTextColor;
+            }
+            
+            if (currentBgColor !== 'transparent') {
+                preview.style.backgroundColor = currentBgColor;
+            }
+        }
+        
+        function selectTextColor(color) {
+            currentTextColor = color;
+            const preview = document.getElementById('stylePreview');
+            preview.style.color = color;
+        }
+        
+        function selectBgColor(color) {
+            currentBgColor = color;
+            const preview = document.getElementById('stylePreview');
+            preview.style.backgroundColor = color;
+        }
+        
+        function applyAdvancedFormatting() {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            const selection = window.getSelection();
+            
+            if (!selection.toString()) {
+                showToast('يرجى تحديد النص أولاً قبل تطبيق التنسيق', 'warning');
+                return;
+            }
+            
+            let style = '';
+            
+            if (currentTextEffect) {
+                switch(currentTextEffect) {
+                    case 'shadow':
+                        style += 'text-shadow: 2px 2px 4px rgba(0,0,0,0.3);';
+                        break;
+                    case 'emboss':
+                        style += 'text-shadow: -1px -1px 1px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.5);';
+                        break;
+                    case 'glow':
+                        style += 'text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6;';
+                        style += 'color: #0073e6;';
+                        break;
+                    case 'outline':
+                        style += 'text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;';
+                        style += 'color: white;';
+                        break;
+                    case 'blur':
+                        style += 'color: transparent; text-shadow: 0 0 5px rgba(0,0,0,0.5);';
+                        break;
+                    case 'gradient':
+                        style += 'background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff); -webkit-background-clip: text; background-clip: text; color: transparent;';
+                        break;
+                    case 'retro':
+                        style += 'color: #fc0; text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000;';
+                        break;
+                    case 'neon':
+                        style += 'color: #fff; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6, 0 0 25px #0073e6, 0 0 30px #0073e6, 0 0 35px #0073e6;';
+                        break;
+                    case '3d':
+                        style += 'text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);';
+                        break;
+                    case 'vintage':
+                        style += 'color: #a37; font-family: Georgia, serif; text-shadow: 2px 2px 0px rgba(0,0,0,0.1);';
+                        break;
+                }
+            }
+            
+            if (currentTextColor && currentTextColor !== '#000000') {
+                style += `color: ${currentTextColor};`;
+            }
+            
+            if (currentBgColor && currentBgColor !== 'transparent') {
+                style += `background-color: ${currentBgColor};`;
+            }
+            
+            if (style) {
+                document.execCommand('insertHTML', false, `<span style="${style}">${selection.toString()}</span>`);
+                closeModal('advancedFormattingModal');
+                showToast('تم تطبيق التنسيق بنجاح', 'success');
+            } else {
+                showToast('يرجى اختيار التنسيق المطلوب', 'warning');
+            }
+        }
+        
+        // أدوات التنسيق الإضافية
+        function applyTextStyle(style) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            const selection = window.getSelection();
+            const hasSelection = selection.toString().length > 0;
+            
+            switch(style) {
+                case 'standard':
+                    if (hasSelection) {
+                        execCommandWithArg('formatBlock', 'p');
+                    } else {
+                        document.execCommand('insertHTML', false, '<p>أدخل النص هنا...</p>');
+                    }
+                    break;
+                case 'heading':
+                    if (hasSelection) {
+                        execCommandWithArg('formatBlock', 'h2');
+                    } else {
+                        document.execCommand('insertHTML', false, '<h2>عنوان رئيسي</h2>');
+                    }
+                    break;
+                case 'subheading':
+                    if (hasSelection) {
+                        execCommandWithArg('formatBlock', 'h3');
+                    } else {
+                        document.execCommand('insertHTML', false, '<h3>عنوان فرعي</h3>');
+                    }
+                    break;
+                case 'quote':
+                    if (hasSelection) {
+                        document.execCommand('insertHTML', false, `<blockquote>${selection.toString()}</blockquote>`);
+                    } else {
+                        document.execCommand('insertHTML', false, '<blockquote>أدخل النص هنا...</blockquote>');
+                    }
+                    break;
+                case 'code':
+                    if (hasSelection) {
+                        document.execCommand('insertHTML', false, `<code>${selection.toString()}</code>`);
+                    } else {
+                        document.execCommand('insertHTML', false, '<code>أدخل الكود هنا...</code>');
+                    }
+                    break;
+                case 'highlight':
+                    if (hasSelection) {
+                        document.execCommand('hiliteColor', false, '#ffff00');
+                    } else {
+                        showToast('يرجى تحديد النص أولاً', 'warning');
+                    }
+                    break;
+            }
+        }
+        
+        function toggleStyle(direction) {
+            const editor = document.getElementById('editor');
+            if (direction === 'rtl') {
+                editor.setAttribute('dir', 'rtl');
+                showToast('تم تعيين اتجاه النص من اليمين إلى اليسار', 'info');
+            } else {
+                editor.setAttribute('dir', 'ltr');
+                showToast('تم تعيين اتجاه النص من اليسار إلى اليمين', 'info');
+            }
+        }
+        
+        function insertSpecialCharacter() {
+            openModal('specialCharactersModal');
+        }
+        
+        function insertCharacter(char) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            document.execCommand('insertText', false, char);
+        }
+        
+        function openTemplatesModal() {
+            openModal('templatesModal');
+        }
+        
+        function insertTemplate(templateType) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            let template = '';
+            
+            switch(templateType) {
+                case 'article':
+                    template = `
+                        <h2>عنوان المقال الرئيسي</h2>
+                        <p>هذه المقدمة تشرح الغرض من المقال وتوضح أهم النقاط التي سيتم تناولها. يمكنك هنا تقديم نظرة عامة عن الموضوع وأهميته.</p>
+                        <h3>العنوان الفرعي الأول</h3>
+                        <p>هنا تبدأ بشرح أول نقطة رئيسية في المقال. يجب أن تكون هذه الفقرة واضحة ومفصلة بما يكفي لتوضيح الفكرة.</p>
+                        <h3>العنوان الفرعي الثاني</h3>
+                        <p>استمر في شرح النقاط الرئيسية الأخرى، مع إضافة أمثلة أو حقائق لدعم المعلومات المقدمة.</p>
+                        <blockquote>يمكنك إضافة اقتباس مناسب هنا للتأكيد على نقطة مهمة في المقال.</blockquote>
+                        <h3>العنوان الفرعي الثالث</h3>
+                        <p>أضف المزيد من المعلومات والتفاصيل هنا. حاول أن تجعل كل عنوان فرعي يتناول فكرة واحدة محددة.</p>
+                        <h3>الخاتمة</h3>
+                        <p>لخص النقاط الرئيسية التي تم مناقشتها في المقال، وقدم استنتاجات أو توصيات إذا كان ذلك مناسباً.</p>
+                    `;
+                    break;
+                case 'blogPost':
+                    template = `
+                        <h2>عنوان منشور المدونة</h2>
+                        <p>مقدمة جذابة تثير اهتمام القارئ وتوضح ما سيتعلمه من هذا المنشور. يمكنك هنا مشاركة قصة شخصية أو إحصائية مثيرة للاهتمام.</p>
+                        <figure style="text-align: center;">
+                            <img src="https://via.placeholder.com/600x400" alt="صورة توضيحية" style="max-width: 100%; height: auto;">
+                            <figcaption style="font-size: 0.9em; color: #666;">وصف الصورة: أضف وصفاً مناسباً هنا</figcaption>
+                        </figure>
+                        <h3>العنوان الأول: شرح الموضوع</h3>
+                        <p>ابدأ بشرح الموضوع الرئيسي للمنشور. استخدم لغة بسيطة وواضحة، وتجنب المصطلحات المعقدة إلا إذا كنت ستشرحها.</p>
+                        <h3>أهم النقاط التي يجب معرفتها</h3>
+                        <ul>
+                            <li>النقطة الأولى: اشرح بالتفصيل</li>
+                            <li>النقطة الثانية: قدم أمثلة عملية</li>
+                            <li>النقطة الثالثة: اذكر الفوائد والتطبيقات</li>
+                        </ul>
+                        <blockquote>
+                            نصيحة مهمة: أضف نصيحة أو ملاحظة مهمة هنا للقراء
+                        </blockquote>
+                        <h3>الخطوات العملية للتطبيق</h3>
+                        <p>قدم خطوات عملية يمكن للقارئ اتباعها. هذا يجعل المحتوى أكثر فائدة وقابلية للتطبيق.</p>
+                        <h3>الخاتمة</h3>
+                        <p>لخص النقاط الرئيسية واذكر الخطوات القادمة التي يمكن للقارئ اتخاذها. شجع على التفاعل والتعليق لبناء مجتمع حول مدونتك.</p>
+                    `;
+                    break;
+                case 'tutorial':
+                    template = `
+                        <h2>دليل شامل: كيفية [الموضوع]</h2>
+                        <p>في هذا الدليل، سنتعلم خطوة بخطوة كيفية [الموضوع]. سواء كنت مبتدئًا أو لديك بعض الخبرة، ستجد هنا معلومات مفيدة تساعدك على إتقان [الموضوع].</p>
+                        <h3>المتطلبات المسبقة</h3>
+                        <ul>
+                            <li>المتطلب الأول</li>
+                            <li>المتطلب الثاني</li>
+                            <li>المتطلب الثالث</li>
+                        </ul>
+                        <h3>الخطوة 1: عنوان الخطوة الأولى</h3>
+                        <p>شرح مفصل للخطوة الأولى. كن واضحًا ودقيقًا، وأضف صورًا توضيحية إذا أمكن.</p>
+                        <img src="https://via.placeholder.com/600x400" alt="توضيح الخطوة الأولى" style="max-width: 100%; height: auto; display: block; margin: 15px auto;">
+                        <h3>الخطوة 2: عنوان الخطوة الثانية</h3>
+                        <p>استمر في شرح الخطوات بالتفصيل، مع الحرص على عدم إغفال أي معلومات قد تكون مهمة للمبتدئين.</p>
+                        <div style="background-color: #f8f9fa; padding: 15px; border-right: 4px solid #4a6da7; margin: 15px 0;">
+                            <strong>ملاحظة مهمة:</strong> أضف هنا أي ملاحظات أو تحذيرات يجب على القارئ الانتباه إليها.
+                        </div>
+                        <h3>الخطوة 3: عنوان الخطوة الثالثة</h3>
+                        <p>أكمل شرح الخطوات المتبقية بنفس المستوى من التفصيل والوضوح.</p>
+                        <h3>نصائح إضافية</h3>
+                        <ul>
+                            <li>النصيحة الأولى</li>
+                            <li>النصيحة الثانية</li>
+                            <li>النصيحة الثانية</li>
+                            <li>النصيحة الثالثة</li>
+                        </ul>
+                        <h3>الخاتمة</h3>
+                        <p>تهانينا! لقد أكملت جميع الخطوات بنجاح. حاول الآن تطبيق ما تعلمته عمليًا، وشارك نتائجك في التعليقات.</p>
+                    `;
+                    break;
+                case 'quote':
+                    template = `
+                        <blockquote style="font-size: 1.2em; border-right: 3px solid #4a6da7; padding: 15px; background-color: #f8f9fa; margin: 25px 0;">
+                            <p style="margin-bottom: 10px;">"أضف هنا نص الاقتباس الذي تريد عرضه بطريقة مميزة ولافتة للنظر. يمكن أن يكون اقتباسًا عميقًا أو مقولة شهيرة أو حكمة جميلة."</p>
+                            <footer style="font-size: 0.9em; color: #666; text-align: left;">— <cite>اسم القائل أو المصدر</cite></footer>
+                        </blockquote>
+                    `;
+                    break;
+                case 'list':
+                    template = `
+                        <h3>قائمة متكاملة</h3>
+                        <p>فيما يلي قائمة بأهم النقاط التي يجب مراعاتها:</p>
+                        <ol>
+                            <li>
+                                <strong>العنصر الأول:</strong>
+                                <p>شرح تفصيلي للعنصر الأول في القائمة. يمكنك إضافة المزيد من التفاصيل هنا.</p>
+                            </li>
+                            <li>
+                                <strong>العنصر الثاني:</strong>
+                                <p>شرح تفصيلي للعنصر الثاني في القائمة. أضف أمثلة أو حقائق إذا كان ذلك مناسبًا.</p>
+                                <ul>
+                                    <li>نقطة فرعية أولى</li>
+                                    <li>نقطة فرعية ثانية</li>
+                                    <li>نقطة فرعية ثالثة</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>العنصر الثالث:</strong>
+                                <p>شرح تفصيلي للعنصر الثالث في القائمة. يمكنك إضافة صور أو روابط عند الحاجة.</p>
+                            </li>
+                            <li>
+                                <strong>العنصر الرابع:</strong>
+                                <p>شرح تفصيلي للعنصر الرابع في القائمة.</p>
+                            </li>
+                            <li>
+                                <strong>العنصر الخامس:</strong>
+                                <p>شرح تفصيلي للعنصر الخامس والأخير في القائمة.</p>
+                            </li>
+                        </ol>
+                        <p>استخدم هذه القائمة كمرجع سريع عند الحاجة.</p>
+                    `;
+                    break;
+                case 'faq':
+                    template = `
+                        <h2>الأسئلة الشائعة</h2>
+                        <p>فيما يلي إجابات على الأسئلة الأكثر شيوعاً حول [الموضوع].</p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 5px;">السؤال الأول: ما هو [الموضوع]؟</h3>
+                            <div style="padding-right: 20px;">
+                                <p>أضف هنا إجابة مفصلة ومباشرة للسؤال الأول. كن واضحًا ودقيقًا، واستخدم لغة بسيطة يفهمها الجميع.</p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 5px;">السؤال الثاني: كيف يمكنني [سؤال متعلق بالموضوع]؟</h3>
+                            <div style="padding-right: 20px;">
+                                <p>أضف هنا إجابة مفصلة للسؤال الثاني. يمكنك تقسيم الإجابة إلى خطوات إذا كان ذلك يسهّل الفهم:</p>
+                                <ol>
+                                    <li>الخطوة الأولى: شرح الخطوة الأولى</li>
+                                    <li>الخطوة الثانية: شرح الخطوة الثانية</li>
+                                    <li>الخطوة الثالثة: شرح الخطوة الثالثة</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 5px;">السؤال الثالث: ما هي أفضل طريقة لـ [سؤال متعلق بالموضوع]؟</h3>
+                            <div style="padding-right: 20px;">
+                                <p>أضف هنا إجابة مفصلة للسؤال الثالث. حاول تقديم أمثلة عملية أو مقارنة بين عدة خيارات للإجابة على هذا السؤال.</p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 5px;">السؤال الرابع: ما هي المشاكل الشائعة في [الموضوع]؟</h3>
+                            <div style="padding-right: 20px;">
+                                <p>أضف هنا إجابة تستعرض المشاكل الشائعة وكيفية حلها.</p>
+                                <ul>
+                                    <li><strong>المشكلة الأولى:</strong> شرح المشكلة والحل</li>
+                                    <li><strong>المشكلة الثانية:</strong> شرح المشكلة والحل</li>
+                                    <li><strong>المشكلة الثالثة:</strong> شرح المشكلة والحل</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 5px;">السؤال الخامس: هل هناك نصائح إضافية حول [الموضوع]؟</h3>
+                            <div style="padding-right: 20px;">
+                                <p>أضف هنا نصائح قيمة وغير معروفة للكثيرين. هذه الإضافات تزيد من قيمة المحتوى وتميزه عن غيره.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            if (template) {
+                document.execCommand('insertHTML', false, template);
+                closeModal('templatesModal');
+                showToast('تم إضافة القالب بنجاح', 'success');
+            }
+        }
+        
+        function openColorPalette() {
+            openModal('colorPaletteModal');
+        }
+        
+        function applyColor(color, type) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            
+            if (type === 'text') {
+                document.execCommand('foreColor', false, color);
+            } else {
+                document.execCommand('hiliteColor', false, color);
+            }
+            closeModal('colorPaletteModal');
+        }
+        
+        // إدارة المظهر
+        function toggleTheme() {
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+        
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            currentTheme = theme;
+            localStorage.setItem('blogEditor_theme', theme);
+            
+            // تحديث أيقونة زر التبديل
+            const themeIcon = document.querySelector('#theme-toggle i');
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+            
+            // تحديث الاعدادات
+            document.getElementById('dark-mode-toggle').checked = theme === 'dark';
+        }
+        
+        // وظائف النوافذ المنبثقة
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // إدارة الإعدادات
+        function openSettingsModal() {
+            // تحديث حالة الإعدادات قبل فتح النافذة
+            document.getElementById('dark-mode-toggle').checked = currentTheme === 'dark';
+            document.getElementById('auto-save-toggle').checked = autoSaveEnabled;
+            document.getElementById('auto-save-interval').value = autoSaveInterval.toString();
+            
+            openModal('settingsModal');
+        }
+        
+        function saveSettings() {
+            // حفظ الإعدادات في التخزين المحلي
+            const theme = document.getElementById('dark-mode-toggle').checked ? 'dark' : 'light';
+            autoSaveEnabled = document.getElementById('auto-save-toggle').checked;
+            autoSaveInterval = parseInt(document.getElementById('auto-save-interval').value);
+            const spellcheck = document.getElementById('spellcheck-toggle').checked;
+            const editorFont = document.getElementById('editor-font').value;
+            const editorFontSize = document.getElementById('editor-font-size').value;
+            
+            // تطبيق الإعدادات
+            setTheme(theme);
+            document.getElementById('editor').spellcheck = spellcheck;
+            document.getElementById('editor').style.fontFamily = editorFont;
+            document.getElementById('editor').style.fontSize = editorFontSize;
+            
+            // حفظ في التخزين المحلي
+            localStorage.setItem('blogEditor_autoSave', autoSaveEnabled);
+            localStorage.setItem('blogEditor_autoSaveInterval', autoSaveInterval);
+            localStorage.setItem('blogEditor_spellcheck', spellcheck);
+            localStorage.setItem('blogEditor_editorFont', editorFont);
+            localStorage.setItem('blogEditor_editorFontSize', editorFontSize);
+            localStorage.setItem('blogEditor_previewStyle', document.getElementById('preview-style').value);
+            
+            closeModal('settingsModal');
+            showToast('تم حفظ الإعدادات بنجاح', 'success');
+        }
+        
+        function loadSettings() {
+            // تحميل الإعدادات من التخزين المحلي
+            const theme = localStorage.getItem('blogEditor_theme') || 'light';
+            autoSaveEnabled = localStorage.getItem('blogEditor_autoSave') === 'false' ? false : true;
+            autoSaveInterval = parseInt(localStorage.getItem('blogEditor_autoSaveInterval')) || 3000;
+            const spellcheck = localStorage.getItem('blogEditor_spellcheck') === 'true';
+            const editorFont = localStorage.getItem('blogEditor_editorFont') || 'Tajawal';
+            const editorFontSize = localStorage.getItem('blogEditor_editorFontSize') || '16px';
+            const previewStyle = localStorage.getItem('blogEditor_previewStyle') || 'blogger';
+            
+            // تطبيق الإعدادات
+            setTheme(theme);
+            document.getElementById('editor').spellcheck = spellcheck;
+            document.getElementById('editor').style.fontFamily = editorFont;
+            document.getElementById('editor').style.fontSize = editorFontSize;
+            if (document.getElementById('preview-style')) {
+                document.getElementById('preview-style').value = previewStyle;
+            }
+            
+            // تحديث واجهة المستخدم
+            document.getElementById('spellcheck-toggle').checked = spellcheck;
+            document.getElementById('editor-font').value = editorFont;
+            document.getElementById('editor-font-size').value = editorFontSize;
+        }
+        
+        // وظائف مساعدة
+        function toggleDarkMode() {
+            const isDarkMode = document.getElementById('dark-mode-toggle').checked;
+            setTheme(isDarkMode ? 'dark' : 'light');
+        }
+        
+        function toggleAutoSave() {
+            autoSaveEnabled = document.getElementById('auto-save-toggle').checked;
+        }
+        
+        function toggleSpellCheck() {
+            document.getElementById('editor').spellcheck = document.getElementById('spellcheck-toggle').checked;
+        }
+        
+        function changeEditorFont(font) {
+            document.getElementById('editor').style.fontFamily = font;
+        }
+        
+        function changeEditorFontSize(size) {
+            document.getElementById('editor').style.fontSize = size;
+        }
+        
+        function changeAutoSaveInterval(interval) {
+            autoSaveInterval = parseInt(interval);
+        }
+        
+        // عرض إشعارات
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const icon = toast.querySelector('i');
+            
+            // تعيين الرسالة
+            toastMessage.textContent = message;
+            
+            // تعيين النوع
+            toast.className = 'toast';
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                icon.className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                toast.classList.add('toast-error');
+                icon.className = 'fas fa-exclamation-circle';
+            } else if (type === 'warning') {
+                toast.classList.add('toast-warning');
+                icon.className = 'fas fa-exclamation-triangle';
+            } else {
+                toast.classList.add('toast-info');
+                icon.className = 'fas fa-info-circle';
+            }
+            
+            // عرض الإشعار
+            toast.classList.add('show');
+            
+            // إخفاء الإشعار بعد 3 ثواني
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // وظيفة للتعامل مع النص البرمجي بشكل آمن
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        
+        // إغلاق النوافذ المنبثقة عند النقر خارجها
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
